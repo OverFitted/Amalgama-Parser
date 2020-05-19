@@ -35,26 +35,26 @@ class Parser:
         return self.text
 
     def save(self, file_name=None):
-        if not file_name:
+        if not file_name:  # Checking if got name
             if not self.name:
                 self.get_name()
             file_name = self.name
-        if file_name.find("csv") == -1:
+        if file_name.find("csv") == -1:  # Adding .csv if needed
             file_name += ".csv"
 
-        if not self.text:
+        if not self.text:  # Checking if got text
             self.get_text()
 
         rus = list()
         eng = list()
-        for i in range(len(self.text)):
+        for i in range(len(self.text)):  # Getting text by languages
             j = self.text[i]
             if i % 2:
                 rus.append(j)
             else:
                 eng.append(j)
 
-        df = pandas.DataFrame(list(zip(eng, rus)), columns=["Rus", "Eng"])
+        df = pandas.DataFrame(list(zip(eng, rus)), columns=["Rus", "Eng"])  # Making DF and saving text to it
         df.to_csv(f"CSV/{file_name}")
 
         return 0
