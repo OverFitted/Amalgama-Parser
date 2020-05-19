@@ -21,6 +21,8 @@ class Parser:
         page_text = page_text[page_text.find(")") + 1:]  # Removing sound name
         page_text = page_text[page_text.find(")") + 4:]
 
+        page_text = page_text.replace('"', "")  # Removing " from text
+
         if page_text.find("* поэтический перевод") != -1:  # Checking if song has poetic translation
             page_text = page_text[:-24]
 
