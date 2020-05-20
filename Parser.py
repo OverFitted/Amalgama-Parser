@@ -10,23 +10,31 @@ class Parser:
         self.text = None
 
     def get_name(self):
-        self.name = " ".join(self.link.split("/")[-1].replace(".html", "").split("_"))  # Getting sound name
+        self.name = " ".join(self.link.split(
+            "/")[-1].replace(".html", "").split("_"))  # Getting sound name
         return self.name.capitalize()
 
     def get_text(self):
         req = get(self.link)  # Getting URL content
 
-        page_text = bs4.BeautifulSoup(req.text, features="lxml").text  # Parsing HTML code to text
-        page_text = page_text[page_text.find("оригинал"):][:-80]  # Removing "pre"text
-        page_text = page_text[page_text.find(")") + 1:]  # Removing sound name
+        # Parsing HTML code to text
+        page_text = bs4.BeautifulSoup(req.text, features="lxml").text
+
+        # Removing "pre"text
+        page_text = page_text[page_text.find("оригинал"):][:-80]
+
+        # Removing sound name
+        page_text = page_text[page_text.find(")") + 1:]
         page_text = page_text[page_text.find(")") + 4:]
 
         page_text = page_text.replace('"', "")  # Removing " from text
 
-        if page_text.find("* поэтический перевод") != -1:  # Checking if song has poetic translation
+        # Checking if song has poetic translation
+        if page_text.find("* поэтический перевод") != -1:
             page_text = page_text[:-24]
 
-        if page_text.find("(перевод") != -1:  # Checking if song has additional translation
+        # Checking if song has additional translation
+        if page_text.find("(перевод") != -1:
             page_text = page_text[:page_text.find("(перевод")].split("\n")
             page_text = page_text[:-10]
         else:
@@ -41,7 +49,7 @@ class Parser:
             if not self.name:
                 self.get_name()
             file_name = self.name
-        if file_name.find("csv") == -1:  # Adding .csv if needed
+        if file_name.find(".csv") == -1:  # Adding .csv if needed
             file_name += ".csv"
 
         if not self.text:  # Checking if got text
@@ -56,7 +64,8 @@ class Parser:
             else:
                 eng.append(j)
 
-        df = pandas.DataFrame(list(zip(eng, rus)), columns=["Rus", "Eng"])  # Making DF and saving text to it
+        # Making DF and saving text to it
+        df = pandas.DataFrame(list(zip(eng, rus)), columns=["Rus", "Eng"])
         df.to_csv(f"CSV/{file_name}")
 
         return 0
